@@ -111,3 +111,22 @@ The configuration file name of will be Either **{serviceName}-{profilename}.yml*
  
 You can use here either yml or properties file.
 
+### > Create configuration files of multiple Services.
+
+Create multiple profile configuration files for every service for separated with folder wise which is given in below picture :
+
+![](img/configurationFile.PNG)
+
+It's no need to change any config client when we separated with folder wise. Only one change required which is mention in **config server** appication .yml, is given below : 
+
+	spring:
+	  cloud:
+	    config:
+	      server:
+	        git:
+	          uri: https://github.com/vikashvs36/spring-cloud-config-store
+	          search-paths: "*service"
+
+**search-paths** is used to search path respected service so need to define common path name.
+
+
