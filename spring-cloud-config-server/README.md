@@ -129,4 +129,28 @@ It's no need to change any config client when we separated with folder wise. Onl
 
 **search-paths** is used to search path respected service so need to define common path name.
 
+### > Get Exact file from config Server
 
+If we just want to see exact configuration file keys and values details of any services by the web, you can get from like this :
+
+	// Get in properties format
+	http://localhost:8888/limit-service.properties
+	
+	// Get in YML format
+	http://localhost:8888/limit-service.yml
+	
+	// Get in JSON format
+	http://localhost:8888/limit-service.json
+	
+**Note :** No metter you have mention in properties file or yml file, you can get in any format.
+
+
+### > Get Configuration file according to tag/label from config Server 
+
+As you know, All configuration files are commited on **spring-cloud-config-store** repository. If you want to get the files according to hash commits then you need to access by **{config_client_Service_name}/{profile}/{tag}** like this :
+
+	http://localhost:8888/limit-service/dev/54855a56e4a7e5fe21a95cec176c69e9f3c31d09
+	
+In limit-service dev/qa/prod configuration file max and min key is there but in default profile had maximum and minimum key was there. so I have committed it after updated like maximum to max and so on. But I want to access it version wise. I mean, I want to access the previous committed files. that means maximum and minimum key wants to use. so I will access it by tag or label. 
+
+ 
