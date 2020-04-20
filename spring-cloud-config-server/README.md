@@ -153,4 +153,4 @@ As you know, All configuration files are commited on **spring-cloud-config-store
 	
 In limit-service dev/qa/prod configuration file max and min key is there but in default profile had maximum and minimum key was there. so I have committed it after updated like maximum to max and so on. But I want to access it version wise. I mean, I want to access the previous committed files. that means maximum and minimum key wants to use. so I will access it by tag or label. 
 
- 
+**Note :** The Problem is this, those we configuration are used like this, this is not used in real world. because In the real world I don't call this rest end points to get the configuration. This has to happened to autometically by the our services. So consume this service we need to create config client like limit-service who we created before. Let's see how to consume all **Spring-cloud-config-server** by **limit-services**. let's go with the **Spring-Cloud-Config-Client** : [Limit-Service](https://github.com/vikashvs36/microservices-tutoria/tree/master/limit-service)  
