@@ -8,6 +8,7 @@ Limit-Service is creating a simple microservice which is used for **Spring Cloud
 
 * Spring Web
 * Spring Boot DevTools
+* Spring Cloud Config Client
 
 **Note :** You have to add the **Config Client** dependency at the time of create the service.
 
@@ -77,7 +78,7 @@ We can use is on the controller to get the values from propertes file as given b
 		return new LimitConfiguration(configuration.getMin(), configuration.getMax());
 	}
 	
-**It's time to upgrade ourself**
+**It's time to upgrade MicroServices features :**
 
 Please pay the more attention here. As of now, In this simple **limit-service** application, We are able to get the configuration values from YMl file. But it's time to think big, There may be different and multiple configuration files. because We works on multiple profile like DEV, QA, PROD and all. So we need to create multiple yml file according to profiles. and suppose we have multiple service so we need to create all configuration profile on every services. So my concern is, It very difficulty to manage all the services configuration files. 
 
@@ -92,4 +93,39 @@ There is two term to call the services which is provide by **Spring Cloud**:
 
 We need to focus to on create **Config server** and How to store multiple profiles of different service wise. We left limit-service here for some moment and focus on Config Server. MicroService means, Modules are divided into several service. So Let's go on little interesting tour to understand config server on another application or service : [Spring-Cloud-Config-Server](https://github.com/vikashvs36/microservices-tutoria/tree/master/spring-cloud-config-server) 
 
-  
+**Spring Cloud Config Client :** 
+
+We need to make config client as a limit-services which will call the values from config server. There may be one or many config client to call the config server.  
+
+To make config client we need to do some step :
+
+**1st Step :**
+
+ Add **Config Client** dependency as given below : 
+
+	<dependency>
+		<groupId>org.springframework.cloud</groupId>
+		<artifactId>spring-cloud-starter-config</artifactId>
+	</dependency>
+
+
+**2nd Step :**
+
+Add config URI. This is the same URL as **Spring-Cloud-Config-Server** application URL
+
+	spring:
+		cloud:
+			config:
+				uri: http://localhost:8888
+
+This Config URI needs to mention on **bootstrap.yml** file. because configuration has need to fetch before go to application.yml
+
+**3rd Step :** 
+
+Add **spring.profiles.active** to fetch profile from config server which you are mention it like below : 
+
+	spring:
+		profiles:
+			active: dev
+			
+**Note :** If you not define **spring.profiles.active** then it will be take default profile from Config Server.
