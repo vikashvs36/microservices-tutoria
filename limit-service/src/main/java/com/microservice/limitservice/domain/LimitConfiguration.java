@@ -1,5 +1,4 @@
-package com.microservice.limitservice.controller.domain;
-
+package com.microservice.limitservice.domain;
 public class LimitConfiguration {
 
 	private int min;

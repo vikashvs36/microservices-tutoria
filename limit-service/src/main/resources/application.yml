@@ -4,3 +4,7 @@ spring:
     
 server:
   port: 1111
+  
+limit-service:
+  min: 10
+  max: 100

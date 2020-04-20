@@ -39,5 +39,41 @@ Adding LimitConfiguration Controller to create a API to get the limit configurat
 
 After run the limit-service application the result will be got from API : **http://localhost:1111/api/limit-service/limits**. It will give the static result. 
 
+To get the configuration properties from properties file we can mention it into **application.yml :**
 
+	limit-service:
+		min: 10
+		max: 100
+	
+### > Way to get the values from properties files into controller using class.
+
+Creating a class named Configuration to get the values from properties files. 
+
+**@Component : ** @Component is the most generic Spring annotation. A class which is decorated with @Component is found during classpath scanning and registered in the context as a Spring bean.
+
+**@ConfigurationProperties(prefix = "limit-service") :** Spring Boot @ConfigurationProperties is letting developer maps the entire .properties and yml file into an object easily. It supports both .properties and .yml file. prefix limit-service, find limit-service.* values.
+
+**Example : ** 
+
+	@Component
+	// prefix limit-service, find limit-service.* values in applicaiton.yml file
+	@ConfigurationProperties(prefix = "limit-service") 
+	public class Configuration {
+	
+		// Remain properties key will be same which is mention in the application.yml file
+		private int min;
+		private int max;
+		
+		// Setter, Getter and Constructor here.
+	}
+
+We can use is on the controller to get the values from propertes file as given below : 
+
+	@Autowired
+	private Configuration configuration;
+	
+	@GetMapping(value = "/limits")
+	public LimitConfiguration fetchLimitConfiguration() {
+		return new LimitConfiguration(configuration.getMin(), configuration.getMax());
+	}
 	
