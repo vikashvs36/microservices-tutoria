@@ -77,3 +77,19 @@ We can use is on the controller to get the values from propertes file as given b
 		return new LimitConfiguration(configuration.getMin(), configuration.getMax());
 	}
 	
+**It's time to upgrade ourself**
+
+Please pay the more attention here. As of now, In this simple **limit-service** application, We are able to get the configuration values from YMl file. But it's time to think big, There may be different and multiple configuration files. because We works on multiple profile like DEV, QA, PROD and all. So we need to create multiple yml file according to profiles. and suppose we have multiple service so we need to create all configuration profile on every services. So my concern is, It very difficulty to manage all the services configuration files. 
+
+Suppose we have a scenario that after complete the task we need to create a build on QA profile of every service so we will need to change the profile from dev to QA then what we have to do. We will have to change the active profile in all services one by one, who is very difficult for every developer. So we need to centralize it into one service called config server So every services will call from the centralize config server.
+
+There is two term to call the services which is provide by **Spring Cloud**:
+
+* Spring Cloud Config Server
+* Spring Cloud Config Client
+
+**Spring Cloud Config Server :** 
+
+We need to focus to on create **Config server** and How to store multiple profiles of different service wise. We left limit-service here for some moment and focus on Config Server. MicroService means, Modules are divided into several service. So Let's go on little interesting tour to understand config server on another application or service : [Spring-Cloud-Config-Server](https://github.com/vikashvs36/microservices-tutoria/tree/master/spring-cloud-config-server) 
+
+  
