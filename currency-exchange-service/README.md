@@ -30,3 +30,27 @@ In this project I am using application.yml but you can use either application.ym
 
 Mentioned here of datasource and jpa properties in applicaiton.yml. after we get it from Config Server.
 
+### > Enable the config client into this application
+
+To enable the config client feature in this application, please follow the below step :
+
+**1st step : Add Dependency**
+
+	 <dependency>
+		<groupId>org.springframework.cloud</groupId>
+		<artifactId>spring-cloud-starter-config</artifactId>
+	</dependency>
+	
+**2nd step :**
+
+Please add **bootstrap.yml** file to clone the configuration properties before reached on the **aplication.yml**. After create the bootstrap.yml file, Please add **spring.cloud.config.uri** property to fetch from Config Server and add **spring.profiles.active** property to fetch configuration from which profile.
+
+	spring:
+	  cloud:
+	    config:
+	      uri: http://localhost:8888
+	      
+	  profiles:
+	    active: dev
+    
+**Note :** After add this file and properties, No need to Datasouce and Jpa properties in application.yml file.
