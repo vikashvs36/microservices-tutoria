@@ -54,3 +54,27 @@ Please add **bootstrap.yml** file to clone the configuration properties before r
 	    active: dev
     
 **Note :** After add this file and properties, No need to Datasouce and Jpa properties in application.yml file.
+
+### > Created a API in the controller
+
+Created a API in the controller to fetch Currency values from one currency to another currency. The Currency domain is fetching from mySQL database.
+
+	@RestController
+	@RequestMapping(value = "/api/currency-exchange-service")
+	public class CurrencyExchangeController {
+		
+		@Autowired
+		private Environment environment; 
+		
+		@Autowired
+		private ExchangeValueService exchangeValueService;
+		
+		@GetMapping(value = "/from/{from}/to/{to}")
+		public ExchangeValue fetchCurrencyExchange(@PathVariable String from, @PathVariable String to) {
+			ExchangeValue exchangeValue = exchangeValueService.retriveExchangeValue(from, to);
+			exchangeValue.setPort(Integer.parseInt(environment.getProperty("local.server.port")));
+			return exchangeValue;
+		}
+	}
+
+There is a API **/api/currency-exchange-service/from/{from}/to/{to}** to fetch the value of money from one currency into another.
