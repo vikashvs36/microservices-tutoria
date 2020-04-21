@@ -6,6 +6,7 @@
 
 * Spring Web
 * Spring Boot DevTools
+* openfeign - Feign Client
 
 ### Application.yml
 
@@ -45,4 +46,40 @@ RestTemplate is way to call an API of another services. RestTemplate is present 
 
 This way, we can call API's but this approach takes more time and affords of developer to implement this and using this way URL needs to do hard coded. So overcome this issue we need to implement the feign Client.
 
+### Feign client
 
+feign client is used to talk with the external service to call API. Feign provides a very easy way to call RESTful services. It can integrates with Ribbon and Eureka Automatically. we can use Eureka Client ID instead of the URL. So URL not needs to do hard coded.
+
+Let's see how to implement Feign Client step by step in the application, is given below :
+
+**1st Step :** Add Dependency
+
+	<dependency>
+		<groupId>org.springframework.cloud</groupId>
+		<artifactId>spring-cloud-starter-openfeign</artifactId>
+	</dependency>
+
+**2nd Step : ** Enable Feign client into the main class.
+
+	@SpringBootApplication
+	@EnableFeignClients("com.microservice.currencyexchangeservice")
+	public class CurrencyExchangeServiceApplication {
+		public static void main(String[] args) {
+			SpringApplication.run(CurrencyExchangeServiceApplication.class, args);
+		}
+	}
+
+The same class package needs to be scan where we enable feign Client
+
+**3rd Step :**
+
+It Needs to Create a proxy class(interface) to define all external service API's. Enable feign Client annotation ex: @FeignClient. 
+
+
+	@FeignClient(name = "currency-exchange-service", url = "http://localhost:2222/")
+	public interface CurrencyExchangeServiceProxy {
+		
+		@GetMapping(value = "/api/currency-exchange-service/from/{from}/to/{to}")
+		public ExchangeValue retriveExchangeValue(@PathVariable String from, 
+								@PathVariable String to);
+	}
