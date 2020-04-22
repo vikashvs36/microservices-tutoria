@@ -36,18 +36,18 @@ public class CurrencyConvertionController {
 				responseType);
 		ExchangeValue obj = forEntity.getBody(); 
 		
-		return new CurrencyExchangeValue(obj.getId(), obj.getFrom(), obj.getTo(),
+		return new CurrencyExchangeValue(obj.getId(), from, to,
 				obj.getConversionMultiple(), quantity, obj.getConversionMultiple() * quantity, obj.getPort());
 	}
 	
-	@GetMapping("/currency-conversion-service-feign/from/{from}/to/{to}/quality/{quantity}")
+	@GetMapping("/feign/from/{from}/to/{to}/quality/{quantity}")
 	public CurrencyExchangeValue fetchCurrencyConvertionByFeign(@PathVariable String from, @PathVariable String to,
 			@PathVariable Double quantity) {
 
 		// Using Feign Client
 		ExchangeValue obj = currencyExchangeServiceProxy.retriveExchangeValue(from, to); 
 		
-		return new CurrencyExchangeValue(obj.getId(), obj.getFrom(), obj.getTo(),
+		return new CurrencyExchangeValue(obj.getId(), from, to,
 				obj.getConversionMultiple(), quantity, obj.getConversionMultiple() * quantity, obj.getPort());
 	}
 	

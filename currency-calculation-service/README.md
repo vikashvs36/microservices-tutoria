@@ -83,3 +83,16 @@ It Needs to Create a proxy class(interface) to define all external service API's
 		public ExchangeValue retriveExchangeValue(@PathVariable String from, 
 								@PathVariable String to);
 	}
+
+In this @FeignClient annotation there has two properties one is name and second one is url. so here we are using name to specify which service needs to call and URL is specify for port that is the caller service are running which port.
+
+After these configuration we are able to talk with another microService with this API which is given below :
+
+	// Using RestTemplate Client
+	http://localhost:4444/api/currency-calculation-service/from/USD/to/INR/quality/100
+	
+	// Using Feign Client
+	http://localhost:4444/api/currency-calculation-service/feign/from/USD/to/INR/quality/100
+
+**Note :** there is a problem to specify URL because suppose there may be *currency-exchange-service* which we want to call the API, that service have many instance so it have many port so how can we specify here URL.
+
