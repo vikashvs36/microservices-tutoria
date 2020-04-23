@@ -4,3 +4,7 @@ spring:
     
 server:
   port: 4444
+ 
+currency-exchange-service:
+  ribbon:
+    listOfServers: http://localhost:2222, http://localhost:3333

@@ -59,7 +59,7 @@ Let's see how to implement Feign Client step by step in the application, is give
 		<artifactId>spring-cloud-starter-openfeign</artifactId>
 	</dependency>
 
-**2nd Step : ** Enable Feign client into the main class.
+**2nd Step :** Enable Feign client into the main class.
 
 	@SpringBootApplication
 	@EnableFeignClients("com.microservice.currencyexchangeservice")
@@ -84,7 +84,7 @@ It Needs to Create a proxy class(interface) to define all external service API's
 								@PathVariable String to);
 	}
 
-In this @FeignClient annotation there has two properties one is name and second one is url. so here we are using name to specify which service needs to call and URL is specify for port that is the caller service are running which port.
+In this @FeignClient annotation there has two properties one is name and second one is url. so here we are using name to specify which service needs to call and URL is specify for port that is the caller service are running which port. If there is not included **spring-cloud-starter-netflix-ribbon** dependency, we must put the URL.  
 
 After these configuration we are able to talk with another microService with this API which is given below :
 
@@ -94,5 +94,52 @@ After these configuration we are able to talk with another microService with thi
 	// Using Feign Client
 	http://localhost:4444/api/currency-calculation-service/feign/from/USD/to/INR/quality/100
 
-**Note :** there is a problem to specify URL because suppose there may be *currency-exchange-service* which we want to call the API, that service have many instance so it have many port so how can we specify here URL.
+**Note :** there is a problem to specify URL because suppose there may be *currency-exchange-service* which we want to call the API, that service have many instance so it have many port so how can we specify here URL. To overcome this issue we are going to learn **Ribbon**.
+
+### Client Side Load Balancer : Ribbon
+
+Ribbon is a client-side load balancer that gives you a lot of control over the behavior of HTTP and TCP clients. Feign already uses Ribbon, so, if you use @FeignClient, this section also applies.
+
+To include Ribbon in out project, We are going step by step : 
+
+**1st step : Add Dependency**
+ 
+	<dependency>
+		<groupId>org.springframework.cloud</groupId>
+		<artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
+	</dependency>
+
+**2nd step :**
+
+> **How to Use Ribbon Without Eureka**
+
+Actually I am not using Eureka server, it will see in next service so we are using here Ribbon with Eureka. However, if you prefer not to use Eureka, Ribbon and Feign also work. 
+
+you have to declared a **@RibbonClient** next to @FeignClient annotation. RibbonClient annotation needs to mention name which is declared in application name whose service we want to use as given below :
+
+	@FeignClient(name = "currency-exchange-service")
+	@RibbonClient(name = "currency-exchange-service")
+	public interface CurrencyExchangeServiceProxy {
+		
+		@GetMapping(value = "/api/currency-exchange-service/from/{from}/to/{to}")
+		public ExchangeValue retriveExchangeValue(@PathVariable String from, @PathVariable String to);
+	
+	} 
+
+You can see here, After mention RibbonClent annotation no need to put the Url in FeignClent annotation. So instead of mention only one Url, we can declare configured server list that means many instance of *currency-exchange-service*. 
+
+**3rd Step :**
+
+The Ribbon client defaults to a configured server list. You can supply the configuration in **application.yml** as follows:
+
+	currency-exchange-service:
+	  ribbon:
+	    listOfServers: http://localhost:2222, http://localhost:3333
+	    # you can mention here any number of servers.
+	    
+
+this code will mention in which service where we want to configure it. We can create multiple proxy service configure in *currency-calculation-service*. 
+	
+
+
 
