@@ -141,4 +141,48 @@ This code will mention in which service where we want to configure it. We can cr
 
 As of now, *currency-exchange-service* has two instances which is running on port *http://localhost:2222, http://localhost:3333*. Suppose this service has a lots of loads so you want to create a three, four, five or so many instances, so you can create and have to mention all these ports where you should have to call from service. But this is not the right way. because service will increase or decrease the instance as per service load. In such case, we are not able to mention listOfServers. So to overcome this problem, **Eureka Naming Server** comes in picture.
 
-Let's setup the *Eureka Naming Server* [here](https://github.com/vikashvs36/microservices-tutorial/tree/master/eureka-naming-server).
+Seting up step by step the *Eureka Naming Server* is [here](https://github.com/vikashvs36/microservices-tutorial/tree/master/eureka-naming-server).
+
+### Connecting Currency-calculation-service with the Eureka Naming Server
+
+Lets connect this Currency-calculation-service with the Eureka Naming Server. We will go step by step as given below :
+
+**Step 1 : Add Dependency**
+
+Adding dependency spring-cloud-starter-netflix-eureka-client in pom.xml to do register with the *Eureka Naming Server*.  
+
+	<dependency>
+		<groupId>org.springframework.cloud</groupId>
+		<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+	</dependency>
+	
+**Step 2 : Add Annotation - @EnableDiscoveryClient**
+
+To enable as discovery client added the annotation in the main class.
+
+	@SpringBootApplication
+	@EnableFeignClients("com.microservice.currencycalculationservice")
+	@EnableDiscoveryClient
+	public class CurrencyCalculationServiceApplication {
+	
+		public static void main(String[] args) {
+			SpringApplication.run(CurrencyCalculationServiceApplication.class, args);
+		}
+	}	
+
+Once you enable the discovery client, you need to configure the url for eureka.
+
+**Step 3 : Configure the URL for Eureka **
+
+To configure the URL for Eureka add the *eureka.client.service-url.defaultZone* in application.yml file.
+
+	eureka:
+	  client:
+	    service-url:
+	      defaultZone: http://localhost:8761/eureka/
+	     
+After configure the URL, run the Currency-calculation-service after Eureka naming server run and refresh the URL http://localhost:8761.  
+
+![](img/service_register_with_eureka.png)
+
+You can see given above picture Application name is there whose services are registered and port are also there. So easily you can find here which service is running on which port. 
