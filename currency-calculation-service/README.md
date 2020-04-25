@@ -7,6 +7,7 @@
 * Spring Web
 * Spring Boot DevTools
 * openfeign - Feign Client
+* Netflix Eureka Client
 
 ### Application.yml
 

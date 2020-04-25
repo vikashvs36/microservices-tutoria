@@ -9,6 +9,7 @@
 * Spring Data JPA
 * MYSQL
 * Spring Cloud Config Client
+* Netflix Eureka Client
 
 ### > Application.yml
 
@@ -104,3 +105,46 @@ Then *Apply* and *Run*. New instance is ready on port 3333. *Currency-exchange-s
 	 http://localhost:3333/api/currency-exchange-service/from/USD/to/INR
 
 Now, We can move one step ahead to next microService features. We are going to implement **Feign Client** and **Client side load balancing with Ribbon** in next microSevices [Currency-Calculation-Service]().
+
+### Connecting Currency-exchange-service with the Eureka-Naming-Server
+
+Lets connect this Currency-exchange-service with the Eureka Naming Server. We will go step by step as given below :
+
+**Step 1 : Add Dependency**
+
+Adding dependency spring-cloud-starter-netflix-eureka-client in pom.xml to do register with the *Eureka Naming Server*.  
+
+	<dependency>
+		<groupId>org.springframework.cloud</groupId>
+		<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+	</dependency>
+	
+**Step 2 : Add Annotation - @EnableDiscoveryClient**
+
+To enable as discovery client added the annotation in the main class.
+
+	@SpringBootApplication
+	@EnableDiscoveryClient
+	public class CurrencyExchangeServiceApplication {
+	
+		public static void main(String[] args) {
+			SpringApplication.run(CurrencyExchangeServiceApplication.class, args);
+		}
+	}	
+
+Once you enable the discovery client, you need to configure the url for eureka.
+
+**Step 3 : Configure the URL for Eureka **
+
+To configure the URL for Eureka add the *eureka.client.service-url.defaultZone* in application.yml file.
+
+	eureka:
+	  client:
+	    service-url:
+	      defaultZone: http://localhost:8761/eureka/
+	     
+After configure the URL, run the *Currency-exchange-service* after Eureka naming server run and refresh the URL http://localhost:8761.  
+
+![](img/service_register_with_eureka.png)
+
+You can see given above picture Application name is there whose services are registered and port are also there. So easily you can find here which service and there instances are running on which port. 
