@@ -187,3 +187,20 @@ After configure the URL, run the Currency-calculation-service after Eureka namin
 ![](img/service_register_with_eureka.png)
 
 You can see given above picture Application name is there whose services are registered and port are also there. So easily you can find here which service is running on which port. 
+
+
+### Distributing call using Eureka and Ribbon
+
+As we see above distributing the service call using ribbon without Eureka. But there was a issue that is URL needs to hard coded so dynamic distributing service call is not possible with any changes. So here we are using Eureka and Ribbon to handle load balancing dynamic without writing any hard coded URL.
+
+	eureka:
+	  client:
+	    service-url:
+	      defaultZone: http://localhost:8761/eureka/
+	
+	#currency-exchange-service:
+	#  ribbon:
+	#    listOfServers: http://localhost:2222, http://localhost:3333 
+	
+After register the service for Eureka, No need to define listOfServers. It would be verified by service/application name. It will automatically detect the service and their instances. suppose *currency-exchange-service* is running with two instance so it will find automatically by the service name. 
+
