@@ -1,0 +1,14 @@
+
+spring:
+  application:
+    name: eureka-naming-server
+    
+server:
+  port: 8761
+  
+eureka:
+  client:
+    register-with-eureka: false         # Telling the server not to register itself in the service registry         
+    fetch-registry: false
+#  server:
+#    wait-time-in-ms-when-sync-empty: 0  # Wait time for subsequent sync

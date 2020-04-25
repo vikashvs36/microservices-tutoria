@@ -137,9 +137,8 @@ The Ribbon client defaults to a configured server list. You can supply the confi
 	    listOfServers: http://localhost:2222, http://localhost:3333
 	    # you can mention here any number of servers.
 	    
+This code will mention in which service where we want to configure it. We can create multiple proxy service configure in *currency-calculation-service*. 
 
-this code will mention in which service where we want to configure it. We can create multiple proxy service configure in *currency-calculation-service*. 
-	
+As of now, *currency-exchange-service* has two instances which is running on port *http://localhost:2222, http://localhost:3333*. Suppose this service has a lots of loads so you want to create a three, four, five or so many instances, so you can create and have to mention all these ports where you should have to call from service. But this is not the right way. because service will increase or decrease the instance as per service load. In such case, we are not able to mention listOfServers. So to overcome this problem, **Eureka Naming Server** comes in picture.
 
-
-
+Let's setup the *Eureka Naming Server* [here](https://github.com/vikashvs36/microservices-tutorial/tree/master/eureka-naming-server).
