@@ -1,0 +1,7 @@
+
+spring:
+  application:
+    name: zuul-api-gatway-server
+    
+server:
+  port: 8080

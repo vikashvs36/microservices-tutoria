@@ -202,5 +202,9 @@ As we see above distributing the service call using ribbon without Eureka. But t
 	#  ribbon:
 	#    listOfServers: http://localhost:2222, http://localhost:3333 
 	
-After register the service for Eureka, No need to define listOfServers. It would be verified by service/application name. It will automatically detect the service and their instances. suppose *currency-exchange-service* is running with two instance so it will find automatically by the service name. 
+After register the service for Eureka, No need to define listOfServers. It would be verified by service/application name. It will automatically detect the service and their instances. suppose *currency-exchange-service* is running with two instance so it will find automatically by the service name. you can see as given picture below : 
+
+![](img/register_services.png) 
+
+
 
