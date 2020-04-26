@@ -113,19 +113,55 @@ With the help of RequestContext we can get the URL of any services. It needs to 
 	HttpServletRequest request = RequestContext.getCurrentContext().getRequest();
 	String URL = request.getRequestURI(); 
 	
-So. After implemented this filter we are able to get the logging of any services from ZullLoggingFilter.  
+So. After implemented this filter we are able to get the logging of any services from ZuulLoggingFilter.  
 
-I am going to start *eureka-naming-server, zull-api-gateway-server, currency-exchange-service and currency-calculation-service* services.
+I am going to start *eureka-naming-server, zuul-api-gateway-server, currency-exchange-service and currency-calculation-service* services.
 
-There is a convention to get the any service request through *zull-api-gateway-server* is given below : 
+There is a convention to get the any service request through *zuul-api-gateway-server* is given below : 
  
 	http://localhost:{gateway-server-port}/{application-name}/{URI}
  	
-Port belongs to *zull-api-gateway-server*, application name and port are service name and server port accordingly which would be mentioned on application.yml of corresponding services. For example, After start these service, I want to access the *currency-exchange-service* through *zull-api-gateway-server*. So how can we access it. Let's see : 
+Port belongs to *zuul-api-gateway-server*, application name and port are service name and server port accordingly which would be mentioned on application.yml of corresponding services. For example, After start these service, I want to access the *currency-exchange-service* through *zuul-api-gateway-server*. So how can we access it. Let's see : 
 
 	// We used to run separately of currency-exchange-service
 	http://localhost:2222/api/currency-exchange-service/from/USD/to/INR
 	
-	// Intercepting through zull-api-gateway-server
+	// Intercepting through zuul-api-gateway-server
 	http://localhost:8080/currency-exchange-service/api/currency-exchange-service/from/USD/to/INR
 	
+### Logging through zuul-api-gateway-server interact with Service to Service using feign Client
+
+Currency-calculation-service is interacting with currency-exchange-service. As of now, you access the currency-calculation-service it will call through the gateway service but there has one more call from currency-exchange-service which is direct call through feign client. there is a problem every service need to call through Gateway api. so let's see how to feign client interact with gateway service.
+
+Name attribute of annotation in Proxy class needs to change in Currency-calculation-service to interact with zuul-api-gateway-server : 
+	
+	// Convert from 
+	@FeignClient(name = "currency-exchange-service")
+	
+	// Convert to
+	@FeignClient(name = "zuul-api-gatway-server")
+	
+and as above convention to interact with the any url though zuul-api-gateway-server, Request needs to change as given below :
+
+	// Convert from 
+	@GetMapping(value = "/api/currency-exchange-service/from/{from}/to/{to}")
+	
+	// Convert to
+	@GetMapping(value = "/currency-exchange-service/api/currency-exchange-service/from/{from}/to/{to}")
+	
+After these changes are done in CurrencyExchangeServiceProxy from Currency-calculation-service look like as given below : 
+
+	@FeignClient(name = "zuul-api-gatway-server")
+	@RibbonClient(name = "currency-exchange-service")
+	public interface CurrencyExchangeServiceProxy {
+		
+		@GetMapping(value = "/currency-exchange-service/api/currency-exchange-service/from/{from}/to/{to}")
+		public ExchangeValue retriveExchangeValue(@PathVariable String from, @PathVariable String to);
+	}
+	
+Output from Zuul-api-getway-server : 
+
+	2020-04-26 17:22:38.559  INFO 1072 --- [nio-8080-exec-3] c.m.z.filter.ZuulLoggingFilter           : Request from URI : /currency-calculation-service/api/currency-calculation-service/feign/from/USD/to/INR/quality/100
+	2020-04-26 17:22:38.580  INFO 1072 --- [nio-8080-exec-2] c.m.z.filter.ZuulLoggingFilter           : Request from URI : /currency-exchange-service/api/currency-exchange-service/from/USD/to/INR
+	
+
