@@ -25,7 +25,7 @@ It is important to remember that maintaining an API-Gateway service brings you m
 	server:
 	  port: 8080
 
-### Setting up Zuul API Gateway
+## Setting up Zuul API Gateway
 
 **Step 1 : Add dependency**
 
@@ -72,6 +72,8 @@ Zuul has mainly four types of filters that enable us to intercept the traffic in
 * route filters – are used to route the request.
 * error filters – are invoked when an error occurs while handling the request.
 
+
+## Filter and Router : Zuul
 
 ### Implementing Zuul Logging Filter
 
@@ -164,4 +166,91 @@ Output from Zuul-api-getway-server :
 	2020-04-26 17:22:38.559  INFO 1072 --- [nio-8080-exec-3] c.m.z.filter.ZuulLoggingFilter           : Request from URI : /currency-calculation-service/api/currency-calculation-service/feign/from/USD/to/INR/quality/100
 	2020-04-26 17:22:38.580  INFO 1072 --- [nio-8080-exec-2] c.m.z.filter.ZuulLoggingFilter           : Request from URI : /currency-exchange-service/api/currency-exchange-service/from/USD/to/INR
 	
+	
+## Router : Zuul
 
+Routing is an integral part of a microservice architecture. For example, / may be mapped to your web application, /api/users is mapped to the user service and /api/shop is mapped to the shop service. 
+Zuul is a JVM-based router and server-side load balancer from Netflix.
+
+	zuul:
+  		ignoredServices: '*'
+  		routes:
+    		exchange: /myExchange/**
+    		
+In the preceding example, all services are ignored, except for exchange.
+
+	zuul:
+  		routes:
+    		exchange: /myExchange/**
+    		
+The preceding example means that HTTP calls to /myExchange get forwarded to the exchange service (for example /myExchange/101 is forwarded to /101).
+
+To get more fine-grained control over a route, you can specify the path and the serviceId independently, as follows:
+
+	zuul:
+  		routes:
+    		exchange_service:
+      			path: /myExchange/**
+      			serviceId: exchange_service
+
+The preceding example means that HTTP calls to /myExchange get forwarded to the exchange_service service. The route must have a path 
+that can be specified as an ant-style pattern, so /exchange_service/* only matches one level, but /exchange_service/** matches hierarchically.
+
+The location of the back end can be specified as either a serviceId (for a service from discovery) or a url (for a physical location), as shown in the following example:
+
+	zuul:
+  		routes:
+    		exchange_service:
+      			path: /myExchange/**
+    			url: https://localhost:2222/exchange_service
+    			
+These simple url-routes do not get executed as a HystrixCommand, nor do they load-balance multiple URLs with Ribbon. 
+
+As we mentioned one service route, can be configure multiple service routes.
+
+	zuul:
+  		routes:
+    		CURRENCY-EXCHANGE-SERVICE:
+      			path: /currency-exchange-service/**
+    			serviceId: CURRENCY-EXCHANGE-SERVICE
+    		CURRENCY-CALCULATION-SERVICE:
+    			path: /currency-calculation-service/**
+    			serviceId: CURRENCY-CALCULATION-SERVICE
+    			
+We can specify common prefix for all services as well.
+
+	zuul:
+  		prefix: /api 
+  		routes:
+    		CURRENCY-EXCHANGE-SERVICE:
+      			path: /currency-exchange-service/**
+    			serviceId: CURRENCY-EXCHANGE-SERVICE
+    		CURRENCY-CALCULATION-SERVICE:
+    			path: /currency-calculation-service/**
+    			serviceId: CURRENCY-CALCULATION-SERVICE
+    			
+After mention this routes services URL can be called as prefix and path like this:
+
+	// CURRENCY-EXCHANGE-SERVICE
+	http://localhost:8080/api/currency-exchange-service/**
+	
+	// CURRENCY-CALCULATION-SERVICE:
+	http://localhost:8080/api/currency-calculation-service/**
+	
+let's see after Implemented Zuul-api-gatway-server, specific service URL will be converted into Gatway-server like :
+
+	// CURRENCY-EXCHANGE-SERVICE
+	http://localhost:2222/from/USD/to/INR
+	// GatWay-Service
+	http://localhost:8080/api/currency-exchange-service/from/USD/to/INR
+	
+	// CURRENCY-EXCHANGE-SERVICE
+	http://localhost:4444/from/USD/to/INR/quality/100
+	// GatWay-Service
+	http://localhost:8080/api/currency-calculation-service/from/USD/to/INR/quality/100
+	
+	// CURRENCY-EXCHANGE-SERVICE - with feign 
+	http://localhost:4444/feign/from/USD/to/INR/quality/100
+	// GatWay-Service - with feign
+	http://localhost:8080/api/currency-calculation-service/feign/from/USD/to/INR/quality/100
+	

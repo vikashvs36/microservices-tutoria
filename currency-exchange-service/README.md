@@ -148,3 +148,23 @@ After configure the URL, run the *Currency-exchange-service* after Eureka naming
 ![](img/service_register_with_eureka.png)
 
 You can see given above picture Application name is there whose services are registered and port are also there. So easily you can find here which service and there instances are running on which port. 
+
+After register the same service for Eureka, we are going to one step ahead Zuul-Api-Gatway-Server. Let's understand scenario first.
+
+You will create couple of service as we created in this repository. Every service will has their own ports so these ports can be 
+difficult to manage by the UI side and some of operation need to centralized like security, logging and all. So We need to implement a getway server 
+where we can perform these operations and users have call only one port for all services. Let's understand [Zuul-Api-Gatway-Server](https://github.com/vikashvs36/microservices-tutorial/tree/master/zuul-api-gatway-server)
+
+As you see above, we created exchange API :
+
+	http://localhost:2222/api/currency-exchange-service/from/USD/to/INR
+
+Except for mention common url like '/api/currency-exchange-service' in every controller of the Service, we can mention it on GetWay-Server. this api will be for same service is :
+
+	http://localhost:2222/from/USD/to/INR
+	
+After mention serviceId or path in Gateway-server, we can call this same API from Getway server like this :
+
+	 http://localhost:8080/api/currency-exchange-service/from/USD/to/INR	// 8080 is Gateway port. 
+
+ 

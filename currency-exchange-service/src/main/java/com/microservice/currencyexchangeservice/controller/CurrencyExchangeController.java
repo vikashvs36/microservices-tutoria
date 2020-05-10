@@ -11,7 +11,7 @@ import com.microservice.currencyexchangeservice.domain.ExchangeValue;
 import com.microservice.currencyexchangeservice.service.ExchangeValueService;
 
 @RestController
-@RequestMapping(value = "/api/currency-exchange-service")
+//@RequestMapping(value = "/api/currency-exchange-service")
 public class CurrencyExchangeController {
 	
 	@Autowired

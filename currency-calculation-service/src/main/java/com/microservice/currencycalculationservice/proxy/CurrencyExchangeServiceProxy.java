@@ -13,8 +13,12 @@ import com.microservice.currencycalculationservice.dto.ExchangeValue;
 @RibbonClient(name = "currency-exchange-service")
 public interface CurrencyExchangeServiceProxy {
 	
+	// Before Gatway server
 //	@GetMapping(value = "/api/currency-exchange-service/from/{from}/to/{to}")
-	@GetMapping(value = "/currency-exchange-service/api/currency-exchange-service/from/{from}/to/{to}")
+	// After Gatway server
+//	@GetMapping(value = "/currency-exchange-service/api/currency-exchange-service/from/{from}/to/{to}")
+	// Before Gatway server with service id and path
+	@GetMapping(value = "/api/currency-exchange-service/from/{from}/to/{to}")
 	public ExchangeValue retriveExchangeValue(@PathVariable String from, @PathVariable String to);
 
 }

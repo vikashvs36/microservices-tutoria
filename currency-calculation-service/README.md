@@ -193,18 +193,42 @@ You can see given above picture Application name is there whose services are reg
 
 As we see above distributing the service call using ribbon without Eureka. But there was a issue that is URL needs to hard coded so dynamic distributing service call is not possible with any changes. So here we are using Eureka and Ribbon to handle load balancing dynamic without writing any hard coded URL.
 
+	#currency-exchange-service:
+	#  ribbon:
+	#    listOfServers: http://localhost:2222, http://localhost:3333
+	
 	eureka:
 	  client:
 	    service-url:
 	      defaultZone: http://localhost:8761/eureka/
-	
-	#currency-exchange-service:
-	#  ribbon:
-	#    listOfServers: http://localhost:2222, http://localhost:3333 
+	 
 	
 After register the service for Eureka, No need to define listOfServers. It would be verified by service/application name. It will automatically detect the service and their instances. suppose *currency-exchange-service* is running with two instance so it will find automatically by the service name. you can see as given picture below : 
 
 ![](img/register_services.png) 
 
+You can see given above picture Application name is there whose services are registered and port are also there. So easily you can find here which service and there instances are running on which port. 
+
+After register the same service for Eureka, we are going to one step ahead Zuul-Api-Gatway-Server. Let's understand scenario first.
+
+You will create couple of service as we created in this repository. Every service will has their own ports so these ports can be 
+difficult to manage by the developer and some of operation need to centralized like security, logging and all. So We need to implement a getway server 
+where we can perform these operations and users have call only one port for all services. Let's understand [Zuul-Api-Gatway-Server](https://github.com/vikashvs36/microservices-tutorial/tree/master/zuul-api-gatway-server)
+
+As you see above, we created exchange API :
+
+	http://localhost:4444/api/currency-calculation-service/from/USD/to/INR/quality/10
+	http://localhost:4444/api/currency-calculation-service/feign/from/USD/to/INR/quality/100
+
+Except for mention common url like '/api/currency-calculation-service' in every controller of the Service, we can mention it on GetWay-Server. this api will be for same service is :
+
+	http://localhost:4444/from/USD/to/INR/quality/10
+	http://localhost:4444/feign/from/USD/to/INR/quality/100
+	
+After mention serviceId and path in Gateway-server, we can call this same API from Getway server like this :
+
+	 // 8080 is Gateway port. 
+	 http://localhost:4444/api/currency-calculation-service/from/USD/to/INR/quality/10
+	 http://localhost:4444/api/currency-calculation-service/feign/from/USD/to/INR/quality/100
 
 

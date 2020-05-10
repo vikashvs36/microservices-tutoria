@@ -10,3 +10,13 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
+  
+zuul:
+  prefix: /api
+  routes:
+    CURRENCY-EXCHANGE-SERVICE:
+      path: /currency-exchange-service/**
+      serviceId: CURRENCY-EXCHANGE-SERVICE
+    CURRENCY-CALCULATION-SERVICE:
+      path: /currency-calculation-service/**
+      serviceId: CURRENCY-CALCULATION-SERVICE
